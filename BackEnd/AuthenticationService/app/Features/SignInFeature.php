@@ -3,6 +3,7 @@
 namespace App\Features;
 
 use App\Domains\Authentication\Jobs\AuthenticationAttemptJob;
+use App\Domains\Authentication\Jobs\GetCurrentUserJob;
 use App\Traits\ApiResponder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
