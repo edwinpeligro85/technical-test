@@ -1,0 +1,58 @@
+version: '3.8'
+
+networks:
+  service_network:
+    driver: bridge
+
+services:
+  authentication-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: authentication-service
+    ports:
+      - "8021:8021"
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: my_user
+      MYSQL_PASSWORD: my_password
+    networks:
+      - service_network
+
+  category-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: category-service
+    ports:
+      - "8022:8022"
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: my_user
+      MYSQL_PASSWORD: my_password
+    networks:
+      - service_network
+
+  gateway-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: gateway-service
+    ports:
+      - "8020:8020"
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: my_user
+      MYSQL_PASSWORD: my_password
+      MYSQL_ROOT_PASSWORD: my_root_password
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - service_network

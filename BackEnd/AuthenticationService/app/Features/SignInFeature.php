@@ -4,8 +4,8 @@ namespace App\Features;
 
 use App\Domains\Authentication\Jobs\AuthenticationAttemptJob;
 use App\Domains\Authentication\Jobs\GetCurrentUserJob;
+use App\Domains\Authentication\Requests\SignInRequest;
 use App\Traits\ApiResponder;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Lucid\Domains\Http\Jobs\RespondWithJsonErrorJob;
 use Lucid\Domains\Http\Jobs\RespondWithJsonJob;
@@ -15,7 +15,7 @@ class SignInFeature extends Feature
 {
     use ApiResponder;
 
-    public function handle(Request $request)
+    public function handle(SignInRequest $request)
     {
         if (!$token = $this->run(new AuthenticationAttemptJob($request->validated()))) {
             return $this->run(new RespondWithJsonErrorJob(

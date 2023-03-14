@@ -30,4 +30,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+
+    'users' => [
+        'url' => env('USERS_SERVICE_URL'),
+    ],
+    'categories' => [
+        'url' => env('CATEGORIES_SERVICE_URL'),
+    ],
 ];

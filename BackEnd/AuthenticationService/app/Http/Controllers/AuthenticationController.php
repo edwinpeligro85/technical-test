@@ -10,6 +10,11 @@ use Lucid\Units\Controller;
 
 class AuthenticationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['signin']]);
+    }
+
     public function signin()
     {
         return $this->serve(SignInFeature::class);
