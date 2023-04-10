@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,13 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::group(['middleware' => 'api'], function () {
-    Route::post('signin', [AuthenticationController::class, 'signin']);
-    Route::post('logout', [AuthenticationController::class, 'logout']);
-    Route::post('refresh', [AuthenticationController::class, 'refresh']);
-    Route::post('me', [AuthenticationController::class, 'me']);
-});
+Route::post('signin', [AuthenticationController::class, 'signin']);
+Route::post('logout', [AuthenticationController::class, 'logout']);
+Route::post('refresh', [AuthenticationController::class, 'refresh']);
+Route::get('me', [AuthenticationController::class, 'me']);
+Route::get('verify-token', [AuthenticationController::class, 'verifyToken']);

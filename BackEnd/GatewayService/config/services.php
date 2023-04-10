@@ -31,8 +31,8 @@ return [
     ],
 
 
-    'users' => [
-        'url' => env('USERS_SERVICE_URL'),
+    'auth' => [
+        'url' => env('AUTH_SERVICE_URL'),
     ],
     'categories' => [
         'url' => env('CATEGORIES_SERVICE_URL'),

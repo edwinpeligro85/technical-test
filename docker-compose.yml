@@ -2,57 +2,61 @@ version: '3.8'
 
 networks:
   service_network:
+    name: service_network
     driver: bridge
 
 services:
-  authentication-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: authentication-service
-    ports:
-      - "8021:8021"
-    environment:
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      MYSQL_DATABASE: my_database
-      MYSQL_USER: my_user
-      MYSQL_PASSWORD: my_password
-    networks:
-      - service_network
-
-  category-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: category-service
-    ports:
-      - "8022:8022"
-    environment:
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      MYSQL_DATABASE: my_database
-      MYSQL_USER: my_user
-      MYSQL_PASSWORD: my_password
-    networks:
-      - service_network
-
-  gateway-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: gateway-service
-    ports:
-      - "8020:8020"
-
   mysql:
     image: mysql:latest
+    restart: always
     environment:
-      MYSQL_DATABASE: my_database
-      MYSQL_USER: my_user
-      MYSQL_PASSWORD: my_password
-      MYSQL_ROOT_PASSWORD: my_root_password
+      MYSQL_DATABASE: default
+      MYSQL_ROOT_PASSWORD: password
     volumes:
-      - ./mysql:/var/lib/mysql
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/config:/docker-entrypoint-initdb.d
+    command: --init-file /docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3308:3306"
     networks:
       - service_network
+
+  authentication-service:
+    container_name: authentication-service
+    image: authentication-service
+    build:
+      context: ./BackEnd/AuthenticationService
+      dockerfile: Dockerfile
+    env_file: ./BackEnd/AuthenticationService/.env.prod
+    depends_on:
+      - mysql
+    ports:
+      - "8021:9000"
+    networks:
+      - service_network
+
+  # category-service:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: category-service
+  #   ports:
+  #     - "8022:8022"
+  #   environment:
+  #     MYSQL_HOST: mysql
+  #     MYSQL_PORT: 3308
+  #     MYSQL_DATABASE: category_db
+  #     MYSQL_USER: category_user
+  #     MYSQL_PASSWORD: category_password
+  #   networks:
+  #     - service_network
+
+  gateway-service:
+    container_name: gateway-service
+    image: gateway-service
+    build:
+      context: ./BackEnd/GatewayService
+      dockerfile: Dockerfile
+    ports:
+      - "8020:80"
+    

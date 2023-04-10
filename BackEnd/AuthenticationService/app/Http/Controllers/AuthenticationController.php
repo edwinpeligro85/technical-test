@@ -6,6 +6,7 @@ use App\Features\GetMeFeature;
 use App\Features\LogoutFeature;
 use App\Features\RefreshFeature;
 use App\Features\SignInFeature;
+use App\Features\VerifyTokenFeature;
 use Lucid\Units\Controller;
 
 class AuthenticationController extends Controller
@@ -33,5 +34,10 @@ class AuthenticationController extends Controller
     public function logout()
     {
         return $this->serve(LogoutFeature::class);
+    }
+
+    public function verifyToken()
+    {
+        return $this->serve(VerifyTokenFeature::class);
     }
 }
