@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Category;
+use App\Data\Models\Category;
 use Fureev\Trees\Migrate;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;

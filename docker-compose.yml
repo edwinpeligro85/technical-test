@@ -27,11 +27,13 @@ services:
     build:
       context: ./BackEnd/AuthenticationService
       dockerfile: Dockerfile
+      args:
+        - SERVERNAME=localhost
     env_file: ./BackEnd/AuthenticationService/.env.prod
     depends_on:
       - mysql
     ports:
-      - "8021:9000"
+      - "8021:80"
     networks:
       - service_network
 

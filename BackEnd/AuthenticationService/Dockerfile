@@ -6,17 +6,14 @@ RUN composer install --no-ansi --no-interaction --no-scripts --no-suggest --no-p
 RUN composer dumpautoload
 RUN php artisan cache:clear
 RUN php artisan route:cache
-RUN php artisan livewire:publish --assets 
 RUN php artisan storage:link
-
 
 FROM php:8.2-fpm
 
 ARG SERVERNAME
-ARG ENVIRONMENT
 
 # Set working directory
-WORKDIR /var/www/html
+WORKDIR /var/www
 
 # Add docker php ext repo
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
@@ -41,6 +38,9 @@ RUN apt-get update && apt-get install -y \
     libmemcached-dev \
     nginx
 
+# Install supervisor
+RUN apt-get install -y supervisor
+
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
@@ -54,23 +54,31 @@ RUN useradd -u 1000 -ms /bin/bash -g www www
 # Copy code to /var/www
 COPY --from=composer /app/ ./
 
+COPY --chown=www:www-data . /var/www
+
 # add root to www group
-RUN chmod -R ug+w /var/www/html/storage
+RUN chmod -R ug+w /var/www/storage
 # RUN chmod -R ug+w /var/www
-RUN chown -R www-data:www-data *
+RUN chown -R www-data:www-data /var/www
 
 # Environment
 RUN mv ./.env.prod ./.env
 
 
 # Copy nginx/php/supervisor configs
+RUN cp ./docker/supervisor.conf /etc/supervisord.conf
+RUN cp ./docker/php.ini /usr/local/etc/php/conf.d/app.ini
 RUN cp ./docker/nginx.conf /etc/nginx/sites-enabled/default
 
 # PHP Error Log Files
 RUN mkdir /var/log/php
 RUN touch /var/log/php/errors.log && chmod 777 /var/log/php/errors.log
 
-RUN touch /var/www/html/storage/logs/laravel.log && \
-    chmod 777 /var/www/html/storage/logs/laravel.log
+RUN touch /var/www/storage/logs/laravel.log && \
+    chmod 777 /var/www/storage/logs/laravel.log
+
+# Deployment steps
+RUN chmod +x /var/www/docker/run.sh
 
 EXPOSE 80
+ENTRYPOINT ["/var/www/docker/run.sh"]

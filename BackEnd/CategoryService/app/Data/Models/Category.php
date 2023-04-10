@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Data\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,13 +15,19 @@ class Category extends Authenticatable
 
     protected $keyType = 'uuid';
 
-    // protected static function buildTreeConfig(): Base
-    // {
-    //     $config= new Base(true);
-    //     // $config->parent()->setType('uuid'); <-- `parent type` set up automatically from `$model->keyType`
+    protected $fillable = [
+        'code',
+        'title',
+        'description',
+    ];
 
-    //     return $config;
-    // }
+    protected static function buildTreeConfig(): Base
+    {
+        $config= new Base(true);
+        // $config->parent()->setType('uuid'); <-- `parent type` set up automatically from `$model->keyType`
+
+        return $config;
+    }
 
     // protected static function buildTreeConfig(): BaseConfig
     // {
